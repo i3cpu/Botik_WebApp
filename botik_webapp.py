@@ -1,8 +1,11 @@
 import sqlite3
 import re
+import json
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types.web_app_info import WebAppInfo
+
+from weather import get_weather
 
 bot = Bot('6095288525:AAG9NZQqQekdbvqoZ_NoN6F4EKZBpczzUrE')
 dp = Dispatcher(bot)
@@ -56,14 +59,21 @@ async def main(message: types.Message):
             )
         conn.commit()
 
-    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
-    btn4 = types.KeyboardButton('chatgpt', web_app=WebAppInfo(url='https://chat.openai.com'))
-    btn2 = types.KeyboardButton('youtube', web_app=WebAppInfo(url='https://www.youtube.com'))
-    btn1 = types.KeyboardButton('google', web_app=WebAppInfo(url='https://www.google.com'))
-    btn3 = types.KeyboardButton('bard', web_app=WebAppInfo(url='https://bard.google.com/?hl=en'))
-    markup.row(btn1, btn2, btn3, btn4)
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,resize_keyboard=True)
+    btn1 = types.KeyboardButton('Check the weather ...', web_app=WebAppInfo(url='https://i3cpu.github.io/index.html'))
+    markup.row(btn1)
+
     await message.answer('Hi, share me a link, I will open it!', reply_markup=markup)
 
+@dp.message_handler(commands=['useful_links'])
+async def chatgpt_command(message: types.Message):
+    markup = types.InlineKeyboardMarkup()
+    btn4 = types.InlineKeyboardButton('chatgpt', web_app=WebAppInfo(url='https://chat.openai.com'))
+    btn2 = types.InlineKeyboardButton('youtube', web_app=WebAppInfo(url='https://www.youtube.com'))
+    btn1 = types.InlineKeyboardButton('google', web_app=WebAppInfo(url='https://www.google.com'))
+    btn3 = types.InlineKeyboardButton('bard', web_app=WebAppInfo(url='https://bard.google.com/?hl=en'))
+    markup.add(btn1, btn2, btn3, btn4)
+    await message.answer('Open ...', reply_markup=markup)
 
 
 @dp.message_handler(commands=['chatgpt'])
@@ -72,7 +82,6 @@ async def chatgpt_command(message: types.Message):
     btn1 = types.InlineKeyboardButton('Open ChatGPT', web_app=WebAppInfo(url='https://chat.openai.com'))
     markup.row(btn1)
     await message.answer('Opening ChatGPT...', reply_markup=markup)
-
 
 
 @dp.message_handler(commands=['links'])
@@ -90,6 +99,32 @@ async def show_links(message: types.Message):
             await message.answer('No links found!')
     else:
         await message.answer('User data not found!')
+
+
+@dp.message_handler(commands=['weather'])
+async def chatgpt_command(message: types.Message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True,resize_keyboard=True)
+    btn1 = types.KeyboardButton('Check the weather ...', web_app=WebAppInfo(url='https://i3cpu.github.io/index.html'))
+    markup.row(btn1)
+    await message.answer('Open ...', reply_markup=markup)
+
+
+@dp.message_handler(content_types=['web_app_data'])
+async def web_app(message: types.Message):
+    res = json.loads(message.web_app_data.data)
+    city = res['city_name']
+    data = get_weather(city)
+    if data:
+        city = data['city']
+        status = data['status']
+        temperature = data['temperature']
+        wind_speed = data['wind_speed']
+        humidity = data['humidity']
+        rain = data['rain']
+        mes = f"{city}\nNow in {city} {status}\nTemperature - {temperature['temp']} celsies \nWind speed - {wind_speed['speed']}\nHumidity - {humidity}\n{rain}"
+    else:
+        mes = "Data is not valid!"
+    await message.answer(mes)
 
 
 @dp.message_handler(content_types=['text'])

@@ -20,7 +20,7 @@ body {
 }
 .header{
     text-align: center;
-    color: white;
+    color: var(--tg-theme-text-color,#efefef);
 }
 .info-block{
     display: flex;
