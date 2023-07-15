@@ -40,9 +40,6 @@ def is_user_id_in_db(user_id):
 async def main(message: types.Message):
     user_id = message.from_user.id
 
-    show_db()
-    print(f'=============== users ==================')
-
     if not is_user_id_in_db(user_id):
         username =  message.from_user.username
         first_name = message.from_user.first_name
@@ -75,6 +72,7 @@ async def chatgpt_command(message: types.Message):
     btn1 = types.InlineKeyboardButton('Open ChatGPT', web_app=WebAppInfo(url='https://chat.openai.com'))
     markup.row(btn1)
     await message.answer('Opening ChatGPT...', reply_markup=markup)
+
 
 
 @dp.message_handler(commands=['links'])
@@ -121,9 +119,8 @@ def show_db():
     rows = cursor.fetchall()
     if rows:
         print(rows)
-        # print(users,'=================================')
     else:
-        print('---------------------------- None ------------------------------------')
+        print('-- None --')
 
  
 executor.start_polling(dp)

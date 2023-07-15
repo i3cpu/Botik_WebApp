@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+<!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+<!-- <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+
+</head>
+<body>
+    <!-- <div id="app">{{ message }}</div> -->
+    <div class="header">
+        <h1>Weather</h1>
+    </div>
+    <div class="main">
+        <img src="1.png" alt="weather-png" id="weather-img">
+
+        <div v-if="showInfoBlock" class="info-block">
+            <button @click="to_form">Узнать погоду</button>
+        </div>
+
+        <div v-if="showFormBlock" class="form-block">
+            <form action="">
+                <input v-model="city_name" type="text" placeholder="City">
+                <br>
+                <button @click="close_webapp" >send</button>
+            </form>
+        </div>
+        <!-- <div>{{city_name}}</div>
+        <div>{{ city }}</div> -->
+    </div>
+    
+    
+    <div class="footer"></div>
+
+    
+    
+  <script src='main.js'></script>
+
+</body>
+</html>
